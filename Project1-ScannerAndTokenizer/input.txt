@@ -1,3 +1,16 @@
+
 'Here is a string'
  'They''re Lexi''s Oreos'
-' broken string
+#| Here is a comment! |#
+'Token
+string on 2 lines'
+Schemes blah X Queries
+#| Comment with
+multiple lines |#
+$# comment after a char
+Rules 4thPerson
+FourthPerson
+person#4
+person4
+#| Multiple comments |# .(,) #|On one line|#
+# One line comment.

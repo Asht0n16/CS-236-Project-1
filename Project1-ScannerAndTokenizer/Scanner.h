@@ -34,9 +34,13 @@ public:
 		tokens.push_back(t);
 	}
 
-	void scanChars();
+	void scanWords(char c);
 
-	void scanStrings(char curr);
+	void scanStrings(char c);
+
+	void scanBComment(char c);
+
+	void scanLComment(char c);
 
 	string toString()
 	{
