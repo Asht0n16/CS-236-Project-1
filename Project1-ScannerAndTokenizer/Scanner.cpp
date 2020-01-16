@@ -65,7 +65,7 @@ void Scanner::scanInput()
 			break;
 
 		case '\'':
-			addToVector(Token(STRING, scanStrings(), lineNum));
+			scanStrings(c);
 			break;
 
 		case '#':
@@ -85,8 +85,37 @@ void Scanner::scanChars()
 
 }
 
-string Scanner::scanStrings()
+void Scanner::scanStrings(char curr)
 {
+	string str;
 
-	return "Default String";
+	// Scan next char until EOF is reached
+	curr = in.get();
+	while (curr != -1)
+	{
+		// If the current char is a single quote
+		if (curr == '\'')
+		{
+			// If there are two adjacent single quotes (''), insert apostrophe to string
+			if (in.peek() == '\'')
+			{
+				curr = in.get();		// Change if the output wants us to keep both apostrophes
+				str += curr;
+				curr = in.get();
+				continue;
+			}
+			else // End of string: add to vector and return to main scanner
+			{
+				addToVector(Token(STRING, str, lineNum));
+				return;
+			}
+		}
+
+		// Add current character to string and get next char
+		str += curr;
+		curr = in.get();
+	}
+
+	// If EOF is reached, put string in Undefined Token
+	addToVector(Token(UNDEFINED, str, lineNum));
 }

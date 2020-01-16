@@ -36,7 +36,7 @@ public:
 
 	void scanChars();
 
-	string scanStrings();
+	void scanStrings(char curr);
 
 	string toString()
 	{
