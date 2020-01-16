@@ -33,11 +33,10 @@ public:
 	{
 		tokens.push_back(t);
 	}
-	
-	/*void vectorTest(int t, string v, int l)
-	{
-		tokens.push_back(Token(t, v, l));
-	}*/
+
+	void scanChars();
+
+	string scanStrings();
 
 	string toString()
 	{

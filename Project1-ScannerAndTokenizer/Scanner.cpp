@@ -11,19 +11,19 @@ void Scanner::scanInput()
 	{
 		char c = in.get();
 		string w;
-
-		// Skip whitespace
-		if (isspace(c))
+		
+		// Increase line number
+		if (c == '\n')
 		{
+			lineNum++;
 			continue;
 		}
 
+		// Skip whitespace
+		if (isspace(c)) continue;
+
 		switch (c)
 		{
-		case '\n':
-			lineNum++;	//FIXME!! this line is never hit
-			break;
-
 		case ',':
 			addToVector(Token(COMMA, ",", lineNum));
 			break;
@@ -64,50 +64,29 @@ void Scanner::scanInput()
 			addToVector(Token(ADD, "+", lineNum));
 			break;
 
-		case 'S':		//FIXME! using >> to get the rest of the word will skip whitespace and consume the next word
-			in >> w;
-			if (w == "chemes") {
-				addToVector(Token(SCHEMES, "Schemes", lineNum));
-			}
-			else
-			{
-				addToVector(Token(UNDEFINED, "S", lineNum));
-			}
+		case '\'':
+			addToVector(Token(STRING, scanStrings(), lineNum));
 			break;
 
-		case 'F':
-			in >> w;
-			if (w == "acts") {
-				addToVector(Token(FACTS, "Facts", lineNum));
-			}
-			else
-			{
-				addToVector(Token(UNDEFINED, "F", lineNum));
-			}
+		case '#':
+			// Go to comment scanner --- Maybe distinguish between line comment and block comment here
+			addToVector(Token(COMMENT, "Default comment", lineNum));
 			break;
 
-		case 'R':
-			in >> w;
-			if (w == "ules") {
-				addToVector(Token(RULES, "Rules", lineNum));
-			}
-			else
-			{
-				addToVector(Token(UNDEFINED, "R", lineNum));
-			}
-			break;
-
-		case 'Q':
-			in >> w;
-			if (w == "ueries") {
-				addToVector(Token(QUERIES, "Queries", lineNum));
-			}
-			else
-			{
-				addToVector(Token(UNDEFINED, "Q", lineNum));
-			}
-			break;
+		default:
+			addToVector(Token(UNDEFINED, c, lineNum));
 		}
 	}
 	addToVector(Token(END_OF_FILE, "", lineNum));
+}
+
+void Scanner::scanChars()
+{
+
+}
+
+string Scanner::scanStrings()
+{
+
+	return "Default String";
 }
