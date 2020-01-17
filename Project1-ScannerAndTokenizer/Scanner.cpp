@@ -91,7 +91,7 @@ void Scanner::scanInput()
 			addToVector(Token(UNDEFINED, c, lineNum));
 		}
 	}
-	addToVector(Token(END_OF_FILE, "", lineNum));
+	addToVector(Token(END_OF_FILE, "", ++lineNum));
 }
 
 void Scanner::scanWords(char c)
@@ -136,6 +136,7 @@ void Scanner::scanWords(char c)
 void Scanner::scanStrings(char c)
 {
 	string str;
+	str += c;
 	int ogLine = lineNum;
 
 	// Scan next char until EOF is reached
@@ -148,21 +149,23 @@ void Scanner::scanStrings(char c)
 			// If there are two adjacent single quotes (''), insert apostrophe to string
 			if (in.peek() == '\'')
 			{
-				c = in.get();		// Change if the output wants us to keep both apostrophes
+				str += c;		// Add both apostrophes
+				c = in.get();
 				str += c;
 				c = in.get();
 				continue;
 			}
 			else // End of string: add to vector and return to main scanner
 			{
-				addToVector(Token(STRING, str, lineNum));
+				str += c;
+				addToVector(Token(STRING, str, ogLine));
 				return;
 			}
 		}
 		else if (c == '\n')
 		{
 			lineNum++;
-			str += ' ';
+			str += c;
 			c = in.get();
 			continue;
 		}
@@ -173,7 +176,7 @@ void Scanner::scanStrings(char c)
 	}
 
 	// If EOF is reached, put string in Undefined Token
-	addToVector(Token(UNDEFINED, str, lineNum));
+	addToVector(Token(UNDEFINED, str, ogLine));
 }
 
 void Scanner::scanBComment(char c)
@@ -198,8 +201,8 @@ void Scanner::scanBComment(char c)
 		else if (c == '\n')
 		{
 			lineNum++;
-			comm += ' ';
-			// comm += c;	// Swap with line above if comment token has newline when stored
+			//comm += ' ';
+			comm += c;	// Swap with line above if comment token has newline when stored
 		}
 		else
 		{
