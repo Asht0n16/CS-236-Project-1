@@ -91,7 +91,7 @@ void Scanner::scanInput()
 			addToVector(Token(UNDEFINED, c, lineNum));
 		}
 	}
-	addToVector(Token(END_OF_FILE, "", ++lineNum));
+	addToVector(Token(END_OF_FILE, "", lineNum));
 }
 
 void Scanner::scanWords(char c)
