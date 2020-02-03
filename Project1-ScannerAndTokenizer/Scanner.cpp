@@ -31,43 +31,43 @@ void Scanner::scanInput()
 		switch (c)
 		{
 		case ',':
-			addToVector(Token(COMMA, ",", lineNum));
+			addToDeque(Token(COMMA, ",", lineNum));
 			break;
 			
 		case '.':
-			addToVector(Token(PERIOD, ".", lineNum));
+			addToDeque(Token(PERIOD, ".", lineNum));
 			break;
 
 		case '?':
-			addToVector(Token(Q_MARK, "?", lineNum));
+			addToDeque(Token(Q_MARK, "?", lineNum));
 			break;
 
 		case '(':
-			addToVector(Token(LEFT_PAREN, "(", lineNum));
+			addToDeque(Token(LEFT_PAREN, "(", lineNum));
 			break;
 
 		case ')':
-			addToVector(Token(RIGHT_PAREN, ")", lineNum));
+			addToDeque(Token(RIGHT_PAREN, ")", lineNum));
 			break;
 
 		case ':':
 			if (in.peek() == '-')
 			{
 				c = in.get();
-				addToVector(Token(COLON_DASH, ":-", lineNum));
+				addToDeque(Token(COLON_DASH, ":-", lineNum));
 			}
 			else
 			{
-				addToVector(Token(COLON, ":", lineNum));
+				addToDeque(Token(COLON, ":", lineNum));
 			}
 			break;
 
 		case '*':
-			addToVector(Token(MULTIPLY, "*", lineNum));
+			addToDeque(Token(MULTIPLY, "*", lineNum));
 			break;
 
 		case '+':
-			addToVector(Token(ADD, "+", lineNum));
+			addToDeque(Token(ADD, "+", lineNum));
 			break;
 
 		case '\'':
@@ -88,10 +88,10 @@ void Scanner::scanInput()
 			break;
 
 		default:
-			addToVector(Token(UNDEFINED, c, lineNum));
+			addToDeque(Token(UNDEFINED, c, lineNum));
 		}
 	}
-	addToVector(Token(END_OF_FILE, "", lineNum));
+	addToDeque(Token(END_OF_FILE, "", lineNum));
 }
 
 void Scanner::scanWords(char c)
@@ -111,26 +111,26 @@ void Scanner::scanWords(char c)
 	// Check for Keywords
 	if (word == "Schemes")
 	{
-		addToVector(Token(SCHEMES, word, lineNum));
+		addToDeque(Token(SCHEMES, word, lineNum));
 		return;
 	}
 	else if (word == "Facts")
 	{
-		addToVector(Token(FACTS, word, lineNum));
+		addToDeque(Token(FACTS, word, lineNum));
 		return;
 	}
 	else if (word == "Rules")
 	{
-		addToVector(Token(RULES, word, lineNum));
+		addToDeque(Token(RULES, word, lineNum));
 		return;
 	}
 	else if (word == "Queries")
 	{
-		addToVector(Token(QUERIES, word, lineNum));
+		addToDeque(Token(QUERIES, word, lineNum));
 		return;
 	}
 
-	addToVector(Token(ID, word, lineNum));
+	addToDeque(Token(ID, word, lineNum));
 }
 
 void Scanner::scanStrings(char c)
@@ -158,7 +158,7 @@ void Scanner::scanStrings(char c)
 			else // End of string: add to vector and return to main scanner
 			{
 				str += c;
-				addToVector(Token(STRING, str, ogLine));
+				addToDeque(Token(STRING, str, ogLine));
 				return;
 			}
 		}
@@ -176,7 +176,7 @@ void Scanner::scanStrings(char c)
 	}
 
 	// If EOF is reached, put string in Undefined Token
-	addToVector(Token(UNDEFINED, str, ogLine));
+	addToDeque(Token(UNDEFINED, str, ogLine));
 }
 
 void Scanner::scanBComment(char c)
@@ -194,7 +194,7 @@ void Scanner::scanBComment(char c)
 		{
 			comm += c;
 			comm += in.get();
-			addToVector(Token(COMMENT, comm, ogLine));
+			// addToVector(Token(COMMENT, comm, ogLine));	Removed with addition of Parser
 			return;
 		}
 		// If a newline is found, increase linenum
@@ -212,7 +212,7 @@ void Scanner::scanBComment(char c)
 	}
 
 	// If EOF is reached, put comment in Undefined Token
-	addToVector(Token(UNDEFINED, comm, ogLine));
+	addToDeque(Token(UNDEFINED, comm, ogLine));
 }
 
 void Scanner::scanLComment(char c)
@@ -228,7 +228,7 @@ void Scanner::scanLComment(char c)
 		c = in.get();
 	}
 
-	addToVector(Token(COMMENT, comm, lineNum));
+	// addToVector(Token(COMMENT, comm, lineNum));		Removed with addition of Parser
 
 	if (c == '\n') lineNum++;
 }

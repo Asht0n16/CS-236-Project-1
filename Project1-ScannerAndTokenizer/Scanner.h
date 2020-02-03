@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <deque>
 
 #include "Token.h"
 
@@ -12,13 +13,14 @@ using std::ifstream;
 using std::string;
 using std::ostringstream;
 using std::ostream;
+using std::deque;
 using std::endl;
 
 class Scanner
 {
 private:
 	ifstream in;
-	vector<Token> tokens;
+	deque<Token> tokens;
 	int lineNum;
 
 public:
@@ -29,9 +31,14 @@ public:
 
 	void scanInput();
 
-	void addToVector(Token t)
+	void addToDeque(Token t)
 	{
 		tokens.push_back(t);
+	}
+
+	deque<Token>& getTokens() 
+	{
+		return tokens;
 	}
 
 	void scanWords(char c);

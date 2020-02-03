@@ -64,6 +64,12 @@ public:
 	Token(int t, string v, int l) : type(t), value(v), line(l) {}
 	Token(int t, char v, int l) : type(t), value(1, v), line(l) {}
 
+	int& getType() { return type; }
+
+	string& getValue() { return value; }
+
+	int& getLine() { return line; }
+
 	string toString() const
 	{
 		ostringstream oSS;

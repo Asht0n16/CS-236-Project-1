@@ -1,11 +1,9 @@
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
 #include <vector>
 
 #include "Token.h"
 #include "Scanner.h"
+#include "Parser.h"
 
 using namespace std;
 
@@ -18,29 +16,16 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	// Insert input to scanner
+	// Insert input to scanner and scan for tokens
 	Scanner scan(argv[1]);
 
-	//// -- Scan output tester -- //
-	//scan.vectorTest(1, "test1", 1);
-	//scan.vectorTest(STRING, "test2", 2);
-	//scan.vectorTest(RULES, "test3", 3);
+	// For testing
+	// cout << scan;
 
-	// Output scanner results
-	cout << scan;
+	// Insert scanned tokens into Parser and check the syntax
+	Parser parse(scan.getTokens());
 
-	//// -- Token Tester -- //
-	//vector<Token> tokens;
-	//tokens.push_back(Token(1, "test1", 1));
-	//tokens.push_back(Token(STRING, "test2", 2));
-	//tokens.push_back(Token(RULES, "test3", 3));
-
-	//for (size_t i = 0; i < tokens.size(); i++)
-	//{
-	//	cout << tokens.at(i) << endl;
-	//}
-	//cout << "Total Tokens = " << tokens.size();
-	//// -- End Token Tester -- //
+	cout << parse;
 
 	return 0;
 }
