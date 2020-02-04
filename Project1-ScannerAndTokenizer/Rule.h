@@ -20,7 +20,9 @@ private:
 public:
 	Rule(Predicate p) : headPred(p) {}
 
-	Predicate getHead() { return headPred; }
+	Predicate& getHead() { return headPred; }
+
+	Parameter getLastParam() { return predLists.back().getLastParam(); }
 
 	// Adds a predicate to the rule
 	void addPred(Predicate p)

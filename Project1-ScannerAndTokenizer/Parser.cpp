@@ -264,17 +264,18 @@ void Parser::parameter(int t)
 		{
 			//... and add to the current predicate of the current rule.
 			listOfRules.back().addParam(STRING, tokenList.front().getValue());
+			match(STRING);
 		}
 		else if (t == QUERIES)
 		{
 			//... and add to the predicate of the current query
 			listOfQueries.back().addParam(STRING, tokenList.front().getValue());
+			match(STRING);
 		}
 		else
 		{
 			throw& tokenList.front();
 		}
-		match(STRING);
 	}
 	else if (tokenList.front().getType() == ID)
 	{
@@ -282,21 +283,21 @@ void Parser::parameter(int t)
 		{
 			// Get value of ID and add to the current predicate of the current rule.
 			listOfRules.back().addParam(ID, tokenList.front().getValue());
+			match(ID);
 		}
 		else if (t == QUERIES)
 		{
 			// Get value of ID and add to the predicate of the current query
 			listOfQueries.back().addParam(ID, tokenList.front().getValue());
+			match(ID);
 		}
 		else
 		{
 			throw& tokenList.front();
 		}
-		match(ID);
 	}
 	else if (tokenList.front().getType() == LEFT_PAREN)
 	{
-		// We'll get here soon...
 		expression(t);
 	}
 	else
@@ -305,24 +306,65 @@ void Parser::parameter(int t)
 	}
 }
 
-void Parser::expression(int t)
+string Parser::expression(int t)
 {
 	match(LEFT_PAREN);
-	parameter(t);
-	operator_();
-	parameter(t);
+	Parameter left = exParameter(t);
+	char op = operator_();
+	Parameter right = exParameter(t);
 	match(RIGHT_PAREN);
+
+	ostringstream oSS;
+	oSS << "(" << left << op << right << ")";
+
+	if (t == RULES)
+	{
+		listOfRules.back().addParam(t, oSS.str());
+	}
+	else if (t == QUERIES)
+	{
+		listOfQueries.back().addParam(t, oSS.str());
+	}
+
+	return oSS.str();
 }
 
-void Parser::operator_()
+Parameter Parser::exParameter(int t)
+{
+	string value;
+	if (tokenList.front().getType() == STRING)
+	{
+		value = tokenList.front().getValue();
+		match(STRING);
+		return Parameter(t, value);
+	}
+	else if (tokenList.front().getType() == ID)
+	{
+		value = tokenList.front().getValue();
+		match(ID);
+		return Parameter(t, value);
+	}
+	else if (tokenList.front().getType() == LEFT_PAREN)
+	{
+		return Parameter(t, expression(t));
+	}
+	else
+	{
+		throw& tokenList.front();
+	}
+}
+
+char Parser::operator_()
 {
 	if (tokenList.front().getType() == ADD)
 	{
 		match(ADD);
+		return '+';
 	}
 	else if (tokenList.front().getType() == MULTIPLY)
 	{
 		match(MULTIPLY);
+		return '*';
 	}
 	else
 	{
@@ -333,7 +375,7 @@ void Parser::operator_()
 string Parser::toString()
 {
 	ostringstream oss;
-	if (correctSyntax) {
+	if (correctSyntax && tokenList.front().getType() == END_OF_FILE) {
 		oss << "Success!" << endl
 			<< "Schemes(" << listOfSchemes.size() << "):" << endl;
 		for (size_t i = 0; i < listOfSchemes.size(); i++)
@@ -353,9 +395,9 @@ string Parser::toString()
 		oss << "Queries(" << listOfQueries.size() << "):" << endl;
 		for (size_t i = 0; i < listOfQueries.size(); i++)
 		{
-			oss << "  " << listOfQueries.at(i) << endl;
+			oss << "  " << listOfQueries.at(i) << "?" << endl;
 		}
-		oss << "Domains(" << listOfDomains.size() << "):" << endl;
+		oss << "Domain(" << listOfDomains.size() << "):" << endl;
 		for (set<string>::iterator i = listOfDomains.begin(); i != listOfDomains.end(); i++)
 		{
 			oss << "  " << *i << endl;
@@ -363,8 +405,16 @@ string Parser::toString()
 	}
 	else
 	{
-		oss << "Failure!" << endl
-			<< "  " << *badToken << endl;
+		if (badToken != NULL)
+		{
+			oss << "Failure!" << endl
+				<< "  " << *badToken << endl;
+		}
+		else
+		{
+			oss << "Failure!" << endl
+				<< "  " << tokenList.front() << endl;
+		}
 	}
 	return oss.str();
 }

@@ -21,6 +21,8 @@ private:
 public:
 	Predicate(string n) : name(n) {}
 
+	Parameter getLastParam() { return parameters.back(); }
+
 	// Adds a parameter to the predicate
 	void addParam(int t, string p)
 	{

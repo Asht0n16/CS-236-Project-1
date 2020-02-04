@@ -75,9 +75,11 @@ public:
 
 	void parameter(int t);//->	STRING | ID | expression
 
-	void expression(int t);	//->LEFT_PAREN parameter operator parameter RIGHT_PAREN
+	string expression(int t);//->LEFT_PAREN exParameter operator exParameter RIGHT_PAREN
 
-	void operator_();	//	->	ADD | MULTIPLY
+	Parameter exParameter(int t);//->STRING | ID | expression
+
+	char operator_();	//	->	ADD | MULTIPLY
 
 	string toString();
 

@@ -21,6 +21,10 @@ public:
 		{
 			return value;
 		}
+		else if (type == RULES || type == QUERIES)
+		{
+			return value;
+		}
 		return "Default";
 	}
 
