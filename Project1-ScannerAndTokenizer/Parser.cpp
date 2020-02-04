@@ -1,34 +1,5 @@
 #include "Parser.h"
 
-//-----GRAMMAR------\\
-
-//datalogProgram	->	SCHEMES COLON scheme schemeList
-//						FACTS COLON factList
-//				        RULES COLON ruleList
-//						QUERIES COLON query queryList
-//
-//schemeList		->	scheme schemeList | lambda
-//factList			->	fact factList | lambda
-//ruleList			->	rule ruleList | lambda
-//queryList			->	query queryList | lambda
-//
-//scheme			-> 	ID LEFT_PAREN ID idList RIGHT_PAREN
-//fact				->	ID LEFT_PAREN STRING stringList RIGHT_PAREN PERIOD
-//rule			 	->	headPredicate COLON_DASH predicate predicateList PERIOD
-//query			    ->  predicate Q_MARK
-//
-//headPredicate		->	ID LEFT_PAREN ID idList RIGHT_PAREN
-//predicate			->	ID LEFT_PAREN parameter parameterList RIGHT_PAREN
-//	
-//predicateList		->	COMMA predicate predicateList | lambda
-//parameterList		-> 	COMMA parameter parameterList | lambda
-//stringList		-> 	COMMA STRING stringList | lambda
-//idList  			-> 	COMMA ID idList | lambda
-//
-//parameter			->	STRING | ID | expression
-//expression		-> 	LEFT_PAREN parameter operator parameter RIGHT_PAREN
-//operator			->	ADD | MULTIPLY
-
 void Parser::match(int type)
 {
 	if (tokenList.front().getType() == type)
@@ -298,7 +269,14 @@ void Parser::parameter(int t)
 	}
 	else if (tokenList.front().getType() == LEFT_PAREN)
 	{
-		expression(t);
+		if (t == RULES)		//HERE IS THE PROBLEM!!!
+		{
+			listOfRules.back().addParam(t, expression(t));
+		}
+		else if (t == QUERIES)
+		{
+			listOfQueries.back().addParam(t, expression(t));
+		}
 	}
 	else
 	{
@@ -317,14 +295,14 @@ string Parser::expression(int t)
 	ostringstream oSS;
 	oSS << "(" << left << op << right << ")";
 
-	if (t == RULES)
-	{
-		listOfRules.back().addParam(t, oSS.str());
-	}
-	else if (t == QUERIES)
-	{
-		listOfQueries.back().addParam(t, oSS.str());
-	}
+	//if (t == RULES)		//HERE IS THE PROBLEM!!!
+	//{
+	//	listOfRules.back().addParam(t, oSS.str());
+	//}
+	//else if (t == QUERIES)
+	//{
+	//	listOfQueries.back().addParam(t, oSS.str());
+	//}
 
 	return oSS.str();
 }
