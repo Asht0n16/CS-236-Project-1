@@ -11,7 +11,7 @@ Relation Relation::select(size_t index, string value)
 {
 	Relation answer = Relation(this->getName(), this->getScheme());
 	set<Tuple>::iterator iter = tuples.begin();
-	for (iter; iter != tuples.end(); iter++)
+	for (; iter != tuples.end(); iter++)
 	{
 		if (iter->values.at(index) == value)
 		{
@@ -25,7 +25,7 @@ Relation Relation::select(size_t index1, size_t index2)
 {
 	Relation answer = Relation(this->getName(), this->getScheme());
 	set<Tuple>::iterator iter = tuples.begin();
-	for (iter; iter != tuples.end(); iter++)
+	for (; iter != tuples.end(); iter++)
 	{
 		if (iter->values.at(index1) == iter->values.at(index2))
 		{
