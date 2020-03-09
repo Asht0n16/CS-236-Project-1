@@ -5,9 +5,17 @@ Schemes:
 Facts:
   snap('12345','C. Brown','12 Apple','555-1234').
   snap('33333','Snoopy','12 Apple','555-1234').
+  snap('12345','Calvin H.','12 Apple','123-4567').
+  snap('12345','C. Brown','13 Apple','666-1234').
+  snap('33333','Ashton','Paradise','33333').
+  snap('33333','Alexis','Paradise','33333').
 
 Rules:
   HasSameAddress(X,Y) :- snap(A,X,B,C),snap(D,Y,B,E).
 
 Queries:
-  HasSameAddress('Snoopy',Who)?
+  snap('12345',Y,'12 Apple',Z)?
+  snap(X,Y,'12 Apple',Z)?
+  snap(X,X,X,X)?
+  snap(X,Y,Z,X)?
+  snap(X,'Alexis',Y,X)?

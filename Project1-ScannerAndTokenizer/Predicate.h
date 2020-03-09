@@ -21,6 +21,10 @@ private:
 public:
 	Predicate(string n) : name(n) {}
 
+	string getName() { return name; }
+
+	vector<Parameter> getParams() { return parameters; }
+
 	Parameter getLastParam() { return parameters.back(); }
 
 	// Adds a parameter to the predicate

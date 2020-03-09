@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "Token.h"
+
 using std::string;
 using std::ostream;
 
@@ -14,6 +16,10 @@ private:
 	
 public:
 	Parameter(int t, string s) : type(t), value(s) {}
+
+	string getValue() { return value; }
+
+	int getType() { return type; }
 
 	string toString() 
 	{

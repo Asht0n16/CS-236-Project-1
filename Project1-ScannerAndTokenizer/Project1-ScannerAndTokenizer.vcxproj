@@ -123,17 +123,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Database.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="Relation.cpp" />
     <ClCompile Include="Scanner.cpp" />
+    <ClCompile Include="Scheme.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Database.h" />
     <ClInclude Include="Parameter.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Predicate.h" />
+    <ClInclude Include="Relation.h" />
     <ClInclude Include="Rule.h" />
     <ClInclude Include="Scanner.h" />
+    <ClInclude Include="Scheme.h" />
     <ClInclude Include="Token.h" />
+    <ClInclude Include="Tuple.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt" />

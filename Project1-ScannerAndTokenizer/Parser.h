@@ -38,6 +38,18 @@ public:
 		startParsing();
 	}
 
+	// Getter functions
+	vector<Predicate> getSchemes() const { return listOfSchemes; }
+
+	vector<Predicate> getFacts() const { return listOfFacts; }
+
+	vector<Rule> getRules() const { return listOfRules; }
+
+	vector<Predicate> getQueries() const { return listOfQueries; }
+
+	set<string> getDomain() const { return listOfDomains; }
+
+	// Parsing functions:
 	void match(int type);
 
 	void startParsing();//	->	SCHEMES COLON scheme schemeList

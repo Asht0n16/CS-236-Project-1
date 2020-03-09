@@ -269,7 +269,7 @@ void Parser::parameter(int t)
 	}
 	else if (tokenList.front().getType() == LEFT_PAREN)
 	{
-		if (t == RULES)		//HERE IS THE PROBLEM!!!
+		if (t == RULES)		
 		{
 			listOfRules.back().addParam(t, expression(t));
 		}
