@@ -24,6 +24,10 @@ public:
 
 	vector<string> getAttributes() { return attributes; }
 
+	size_t size() { return attributes.size(); }
+
+	string at(size_t index) { return attributes.at(index); }
+
 	string toString() 
 	{
 		ostringstream oss;

@@ -40,7 +40,9 @@ int main(int argc, char* argv[])
 	#endif
 
 	// Evaluate Queries (Lab 3)
+	#ifndef DEBUG
 	cout << database.evaluateQueries(parse.getQueries());
+	#endif
 
 	return 0;
 }

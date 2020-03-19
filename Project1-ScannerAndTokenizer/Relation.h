@@ -45,9 +45,9 @@ public:
 		tuples.insert(newTuple); 
 	}
 
-	void addTuple(Tuple t)
+	bool addTuple(Tuple t)
 	{
-		tuples.insert(t);
+		return tuples.insert(t).second;
 	}
 
 	// Searches the relation and returns a new relation with only the tuples that have the matching
@@ -62,9 +62,19 @@ public:
 	Relation project(vector<size_t> indices);
 
 	// Returns a new relation with the new scheme given
-	Relation rename(vector<string> attributes);
+	Relation rename(vector<string> attributes, string newName = "");
 
-	//friend Relation& operator+(Relation left, Relation right);
+	// Returns a new relation that is the result of a natural join of this relation and the given relation
+	Relation join(Relation r2);
+
+	// Joins two schemes
+	Scheme joinSchemes(Scheme s1, Scheme s2);
+
+	// Returns true if the two given tuples can be joined
+	bool joinable(Tuple t1, Scheme s1, Tuple t2, Scheme s2);
+
+	// Joins two given tuples
+	Tuple joinTuples(Tuple t1, Scheme s1, Tuple t2, Scheme s2, Scheme newScheme);
 
 	string toString()
 	{

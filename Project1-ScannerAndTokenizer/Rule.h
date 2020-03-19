@@ -22,6 +22,8 @@ public:
 
 	Predicate& getHead() { return headPred; }
 
+	vector<Predicate> getPreds() { return predLists; }
+
 	Parameter getLastParam() { return predLists.back().getLastParam(); }
 
 	// Adds a predicate to the rule

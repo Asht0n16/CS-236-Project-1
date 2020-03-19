@@ -1,6 +1,7 @@
 Schemes:
   snap(S,N,A,P)
-  HasSameAddress(X,Y)
+  csg(C,S,G)
+  HasSameAddress(A,B)
 
 Facts:
   snap('12345','C. Brown','12 Apple','555-1234').
@@ -8,8 +9,12 @@ Facts:
   snap('33333','Snoopy','12 Apple','555-1234').
   snap('12345','Calvin H.','12 Apple','123-4567').
   snap('12345','C. Brown','13 Apple','666-1234').
-  snap('33333','Ashton','Paradise','33333').
-  snap('33333','Alexis','Paradise','33333').
+  snap('07129','Ashton','Paradise','33333').
+  snap('71219','Alexis','Paradise','33333').
+  snap('test','test','nope','test').
+  csg('Chemistry','33333','A').
+  csg('Math','33333','C').
+  csg('Math','07129','A+').
 
 Rules:
   HasSameAddress(X,Y) :- snap(A,X,B,C),snap(D,Y,B,E).
@@ -19,5 +24,6 @@ Queries:
   snap(X,Y,'12 Apple',Z)?
   snap(X,X,X,X)?
   snap(X,Y,Z,X)?
+  snap(X,X,Y,X)?
   snap(X,'Alexis',Y,X)?
   HasSameAddress('C. Brown','Snoopy')?
