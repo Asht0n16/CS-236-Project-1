@@ -45,16 +45,23 @@ void Database::createDatabase()
 	#endif
 
 	// Loop through Rules until no more Tuples are added (Lab 4)
+	cout << "Rule Evaluation" << endl;
+
 	bool changesMade = false;
 	size_t cycleCounter = 0;
 	do 
 	{
+		changesMade = false;
 		for (size_t ruleInd = 0; ruleInd < listOfRules.size(); ruleInd++)
 		{
-			changesMade = evaluateRule(listOfRules.at(0));
+			bool changed = evaluateRule(listOfRules.at(ruleInd));
+			if (changed) changesMade = true;
 		}
+		cycleCounter++;
 	} while (changesMade);
 	
+	// Output for Lab 4
+	cout << endl << "Schemes populated after " << cycleCounter << " passes through the Rules." << endl << endl;
 }
 
 void Database::addRelation(Predicate& scheme)
@@ -171,6 +178,8 @@ Relation Database::evaluatePredicate(Predicate pred)
 
 bool Database::evaluateRule(Rule rule)
 {
+	cout << rule << endl;
+
 	vector<Predicate> predicates = rule.getPreds();
 	vector<Relation> resultingRelations;
 
@@ -323,15 +332,25 @@ bool Database::unionRuleIntoDatabase(Relation rel)
 {
 	string name = rel.getName();
 	set<Tuple> newTuples = rel.getTupleSet();
+	vector<string> scheme = rel.getScheme().getAttributes();
 
 	// Cycle through all the new tuples and add them to the target relation
 	bool added = false;
 	for (set<Tuple>::iterator iter = newTuples.begin(); iter != newTuples.end(); iter++)
 	{
+		
 		bool inserted = listOfRelations[name].addTuple(*iter);
 		if (inserted)
 		{
 			added = true;
+			cout << " ";
+			for (size_t val = 0; val < scheme.size(); val++)
+			{
+				cout << scheme.at(val) << "=" << iter->values.at(val);
+				if (scheme.size() - val != 1) cout << ",";
+				cout << " ";
+			}
+			cout << endl;
 		}
 	}
 

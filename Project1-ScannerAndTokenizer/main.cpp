@@ -41,6 +41,7 @@ int main(int argc, char* argv[])
 
 	// Evaluate Queries (Lab 3)
 	#ifndef DEBUG
+	cout << "Query Evaluation" << endl;
 	cout << database.evaluateQueries(parse.getQueries());
 	#endif
 

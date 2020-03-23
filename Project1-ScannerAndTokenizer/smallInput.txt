@@ -2,6 +2,7 @@ Schemes:
   snap(S,N,A,P)
   csg(C,S,G)
   HasSameAddress(A,B)
+  StudentGrades(N,C,G)
 
 Facts:
   snap('12345','C. Brown','12 Apple','555-1234').
@@ -17,7 +18,8 @@ Facts:
   csg('Math','07129','A+').
 
 Rules:
-  HasSameAddress(X,Y) :- snap(A,X,B,C),snap(D,Y,B,E).
+  HasSameAddress(x,y) :- snap(A,x,B,C),snap(D,y,B,E).
+  StudentGrades(n,c,g) :- snap(S,n,B,C),csg(c,S,g).
 
 Queries:
   snap('12345',Y,'12 Apple',Z)?
@@ -27,3 +29,4 @@ Queries:
   snap(X,X,Y,X)?
   snap(X,'Alexis',Y,X)?
   HasSameAddress('C. Brown','Snoopy')?
+  StudentGrades('Ashton',X,'A+')?
