@@ -26,8 +26,8 @@ Graph Graph::reverse()
 	for (int n = 0; n < numNodes; n++)
 	{
 		set<NodeID> adjSet = container[n].getList();
-		set<NodeID>::iterator iter = adjSet.begin();
-		for (iter; iter != adjSet.end(); iter++)
+		set<NodeID>::iterator iter;
+		for (iter = adjSet.begin(); iter != adjSet.end(); iter++)
 		{
 			// Add backwards edge to reverse graph
 			rev.addDependency(*iter, n);
@@ -40,8 +40,8 @@ void Graph::depthFirstSearch(NodeID n)
 {
 	container[n].mark();
 	set<NodeID> adjList = container[n].getList();
-	set<NodeID>::iterator iter = adjList.begin();
-	for (iter; iter != adjList.end(); iter++)
+	set<NodeID>::iterator iter;
+	for (iter = adjList.begin(); iter != adjList.end(); iter++)
 	{
 		if (!container[*iter].isVisited())
 		{

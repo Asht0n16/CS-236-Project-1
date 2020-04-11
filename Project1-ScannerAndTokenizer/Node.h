@@ -41,9 +41,14 @@ public:
 		set<NodeID>::iterator iter;
 		for (iter = adjList.begin(); iter != adjList.end(); iter++)
 		{
-			oss << "R" << *iter << " ";
+			oss << "R" << *iter << ",";
 		}
-		return oss.str();
+		string s = oss.str();
+		if (s.size() > 0) 
+		{
+			s.pop_back();
+		}
+		return s;
 	}
 
 	friend ostream& operator<<(ostream& os, Node& n)

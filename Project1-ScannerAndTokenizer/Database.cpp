@@ -216,8 +216,8 @@ void Database::evaluateComponent(set<NodeID> scc, Graph& graph)
 	// Output rules in SCC
 	cout << "SCC: ";
 	ostringstream oss;
-	set<NodeID>::iterator iter = scc.begin();
-	for (iter; iter != scc.end(); iter++)
+	set<NodeID>::iterator iter;
+	for (iter = scc.begin(); iter != scc.end(); iter++)
 	{
 		oss << "R" << *iter << ", ";
 	}
@@ -231,7 +231,7 @@ void Database::evaluateComponent(set<NodeID> scc, Graph& graph)
 	{
 		NodeID nID = *scc.begin();
 		Node n = graph.getNode(nID);
-		if (n.getList().size() == 0)
+		if (n.getList().find(nID) != n.getList().end())
 		{
 			evaluateRule(listOfRules.at(nID));
 			cout << "1 passes: R" << nID << endl;
@@ -240,17 +240,22 @@ void Database::evaluateComponent(set<NodeID> scc, Graph& graph)
 	}
 
 	// Loop through Rules until no more Tuples are added (Lab 4)
-	bool changesMade = false;
+	bool changeInCycle = false;
 	size_t cycleCounter = 0;
 	do
 	{
-		changesMade = false;
+		changeInCycle = false;
+		bool changesMade = false;
 		for (iter = scc.begin(); iter != scc.end(); iter++)
 		{
 			changesMade = evaluateRule(listOfRules.at(*iter));
+			if (changesMade || changeInCycle)
+			{
+				changeInCycle = true;
+			}
 		}
 		cycleCounter++;
-	} while (changesMade);
+	} while (changeInCycle);
 	cout << cycleCounter << " passes: " << s << endl;
 	return;
 }
