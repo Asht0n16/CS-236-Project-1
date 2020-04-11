@@ -11,6 +11,7 @@
 #include "Rule.h"
 #include "Relation.h"
 #include "Token.h"
+#include "Graph.h"
 
 using std::vector;
 using std::string;
@@ -46,6 +47,15 @@ private:
 	// Evaluate a single predicate and make a new relation. This version is for rules.
 	Relation evaluatePredicate(Predicate pred);
 
+	// Acts as a boiler plate for the evaluation of the rules
+	void evaluateRules();
+
+	// Cycles through rules and adds dependencies to the graph
+	void addDependencies(Graph& g);
+
+	// Evaluate a single SCC
+	void evaluateComponent(set<NodeID> scc, Graph& graph);
+
 	// Takes a Rule and evaluates it, adding tuples to relations if needed. Returns true if a tuple is added
 	bool evaluateRule(Rule rule);
 
@@ -58,17 +68,17 @@ private:
 	void createNewSchemeAndProjectAndRename(vector<pair<string, size_t>>& variables, Relation& targetRelation);
 
 	// Joins all relations in given vector into one using the Relation::join function
-	Relation joinMultipleRelations(vector<Relation> relationsToBeJoined);
+	Relation joinMultipleRelations(vector<Relation>& relationsToBeJoined);
 
 	// Projects the columns of the given relation based on the given rule
-	Relation projectRuleRelation(Relation rel, Rule& rule);
+	Relation projectRuleRelation(Relation& rel, Rule& rule);
 
 	// Renames the given relation to match a relation already in the database, as given by the rule
-	Relation renameToMatchDatabase(Relation rel, Rule& rule);
+	Relation renameToMatchDatabase(Relation& rel, Rule& rule);
 
 	// Adds all new tuples from the given relation into the matching relation in the database. Returns false if
 	// no new tuples are added
-	bool unionRuleIntoDatabase(Relation rel);
+	bool unionRuleIntoDatabase(Relation& rel);
 
 
 public:

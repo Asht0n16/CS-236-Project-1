@@ -44,24 +44,8 @@ void Database::createDatabase()
 	cout << "Test reorder: " << endl << testR;
 	#endif
 
-	// Loop through Rules until no more Tuples are added (Lab 4)
-	cout << "Rule Evaluation" << endl;
-
-	bool changesMade = false;
-	size_t cycleCounter = 0;
-	do 
-	{
-		changesMade = false;
-		for (size_t ruleInd = 0; ruleInd < listOfRules.size(); ruleInd++)
-		{
-			bool changed = evaluateRule(listOfRules.at(ruleInd));
-			if (changed) changesMade = true;
-		}
-		cycleCounter++;
-	} while (changesMade);
-	
-	// Output for Lab 4
-	cout << endl << "Schemes populated after " << cycleCounter << " passes through the Rules." << endl << endl;
+	// Begin evaluation of Rules
+	evaluateRules();
 }
 
 void Database::addRelation(Predicate& scheme)
@@ -176,6 +160,101 @@ Relation Database::evaluatePredicate(Predicate pred)
 	return targetRelation;
 }
 
+void Database::evaluateRules() {
+	// Create Dependency Graph of rules to improve evaluation
+	Graph dependGraph(listOfRules.size());
+
+	// Add dependencies
+	addDependencies(dependGraph);
+
+	// Print Dependency Graph
+	cout << "Dependency Graph" << endl;
+	cout << dependGraph << endl;
+
+	// Make reverse graph
+	Graph reverseGraph = dependGraph.reverse();
+
+	// Assign postorder #s to reverse graph. 
+	reverseGraph.DFSForest();
+
+	// Obtain Strongly Connected Components by performing DFSForest on original graph using the post ordered nodes from the reverse graph
+	vector<set<NodeID>> strConComps = dependGraph.DFSForest(reverseGraph.getPostOrderedNodes());
+
+	// Evaluate the rules in each SCC in the order they were found
+	cout << "Rule Evaluation" << endl;
+	for (size_t scc = 0; scc < strConComps.size(); scc++)
+	{
+		evaluateComponent(strConComps.at(scc), dependGraph);
+	}
+	cout << endl;
+	return;
+}
+
+void Database::addDependencies(Graph& g)
+{
+	// Cycle through each Rule
+	for (size_t r1 = 0; r1 < listOfRules.size(); r1++)
+	{
+		// Cylce through each predicate in a Rule
+		for (size_t p = 0; p < listOfRules.at(r1).getPreds().size(); p++)
+		{
+			// Cycle through each Rule again
+			for (size_t r2 = 0; r2 < listOfRules.size(); r2++)
+			{
+				// If the name of a predicate in R matches the name of another Rule create a dependency
+				if (listOfRules.at(r1).getPreds().at(p).getName() == listOfRules.at(r2).getHead().getName())
+				{
+					g.addDependency(r1, r2);
+				}
+			}
+		}
+	}
+}
+
+void Database::evaluateComponent(set<NodeID> scc, Graph& graph)
+{
+	// Output rules in SCC
+	cout << "SCC: ";
+	ostringstream oss;
+	set<NodeID>::iterator iter = scc.begin();
+	for (iter; iter != scc.end(); iter++)
+	{
+		oss << "R" << *iter << ", ";
+	}
+	string s = oss.str();
+	s.pop_back();
+	s.pop_back();
+	cout << s << endl;
+
+	// Evaluate only once if there is only one rule that doesn't depend on its self
+	if (scc.size() == 1)
+	{
+		NodeID nID = *scc.begin();
+		Node n = graph.getNode(nID);
+		if (n.getList().size() == 0)
+		{
+			evaluateRule(listOfRules.at(nID));
+			cout << "1 passes: R" << nID << endl;
+			return;
+		}
+	}
+
+	// Loop through Rules until no more Tuples are added (Lab 4)
+	bool changesMade = false;
+	size_t cycleCounter = 0;
+	do
+	{
+		changesMade = false;
+		for (iter = scc.begin(); iter != scc.end(); iter++)
+		{
+			changesMade = evaluateRule(listOfRules.at(*iter));
+		}
+		cycleCounter++;
+	} while (changesMade);
+	cout << cycleCounter << " passes: " << s << endl;
+	return;
+}
+
 bool Database::evaluateRule(Rule rule)
 {
 	cout << rule << endl;
@@ -197,23 +276,26 @@ bool Database::evaluateRule(Rule rule)
 #endif
 
 	// Join all predicate relations into one
-	Relation joined = joinMultipleRelations(resultingRelations);
+	Relation answer = joinMultipleRelations(resultingRelations);
+#ifdef RDEBUG
+	cout << "Joined:" << endl << answer;
+#endif
 
 	// Project needed columns
-	Relation projected = projectRuleRelation(joined, rule);
+	answer = projectRuleRelation(answer, rule);
+#ifdef RDEBUG
+	cout << "Projected:" << endl << answer;
+#endif
 
 	// Rename to match relation in database
-	Relation renamed = renameToMatchDatabase(projected, rule);
-
+	answer = renameToMatchDatabase(answer, rule);
 #ifdef RDEBUG
-	cout << "Joined:" << endl << joined;
-	cout << "Projected:" << endl << projected;
-	cout << "Renamed:" << endl << renamed;
-	cout << "Target:" << endl << listOfRelations[renamed.getName()];
+	cout << "Renamed:" << endl << answer;
+	cout << "Target:" << endl << listOfRelations[answer.getName()];
 #endif
 
 	// Union the resulting relation with the existing relation in the database
-	bool added = unionRuleIntoDatabase(renamed);
+	bool added = unionRuleIntoDatabase(answer);
 
 	return added;
 }
@@ -280,7 +362,7 @@ void Database::createNewSchemeAndProjectAndRename(vector<pair<string, size_t>>& 
 	targetRelation = targetRelation.rename(variableNames);
 }
 
-Relation Database::joinMultipleRelations(vector<Relation> relationsToBeJoined)
+Relation Database::joinMultipleRelations(vector<Relation>& relationsToBeJoined)
 {
 	Relation left = relationsToBeJoined.at(0);
 	for (size_t rel = 1; rel < relationsToBeJoined.size(); rel++)
@@ -292,7 +374,7 @@ Relation Database::joinMultipleRelations(vector<Relation> relationsToBeJoined)
 	return left;
 }
 
-Relation Database::projectRuleRelation(Relation rel, Rule& rule)
+Relation Database::projectRuleRelation(Relation& rel, Rule& rule)
 {
 	// Get the scheme for the new relation and the scheme for the old
 	vector<Parameter> params = rule.getHead().getParams();
@@ -320,7 +402,7 @@ Relation Database::projectRuleRelation(Relation rel, Rule& rule)
 	return rel.project(indices);
 }
 
-Relation Database::renameToMatchDatabase(Relation rel, Rule& rule)
+Relation Database::renameToMatchDatabase(Relation& rel, Rule& rule)
 {
 	string name = rule.getHead().getName();
 	vector<string> newAttributes = listOfRelations[name].getScheme().getAttributes();
@@ -328,7 +410,7 @@ Relation Database::renameToMatchDatabase(Relation rel, Rule& rule)
 	return rel.rename(newAttributes, name);
 }
 
-bool Database::unionRuleIntoDatabase(Relation rel)
+bool Database::unionRuleIntoDatabase(Relation& rel)
 {
 	string name = rel.getName();
 	set<Tuple> newTuples = rel.getTupleSet();

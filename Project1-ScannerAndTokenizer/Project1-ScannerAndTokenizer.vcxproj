@@ -124,7 +124,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Database.cpp" />
+    <ClCompile Include="Graph.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Relation.cpp" />
     <ClCompile Include="Scanner.cpp" />
@@ -132,6 +134,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Database.h" />
+    <ClInclude Include="Graph.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="Parameter.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Predicate.h" />
